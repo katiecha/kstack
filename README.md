@@ -45,3 +45,36 @@ What each piece does:
   when you did not ask for one.
 - `caffeinate -ims`: keeps the machine awake while a long run finishes. No `-d`,
   so the display still sleeps and your screen still locks.
+
+## `claude/`
+
+My global Claude Code setup: `CLAUDE.md`, skills, subagents and
+`settings.json`. Symlink or copy what you want into `~/.claude/`:
+
+```zsh
+ln -s ~/Documents/kstack/claude/skills/create-design-doc ~/.claude/skills/create-design-doc
+```
+
+`CLAUDE.md` is cross-cutting preferences only: writing rules, the Conventional
+Comments contract for review output, where rules files live, and what a skill
+needs in frontmatter to be reachable at all.
+
+`skills/` splits into three groups. Writing and thinking: `create-design-doc`,
+`create-notes`, `dive-deep`, `read-paper`, `handoff`, `gather-context`. PR
+review lenses: `review-pr-quick` for binary house rules, then `review-pr-solid`,
+`review-pr-leetcode` and `review-pr-ai` for the deeper passes, with
+`review-pr-automated` routing them and posting the result as a draft review.
+Guardrails: `check-evidence` labels every claim in a draft as verified or not,
+`check-format` verifies a skill's output against its own contract, and
+`fallback-handler` covers what to do when a step fails.
+
+`agents/` holds one runner per review lens, so each lens reads its own skill in
+its own context and returns only findings.
+
+Hooks are not here yet. The two I run, a formatter that picks up whichever
+formatter the edited file's own project has, and a once-per-session reflection
+pass, are shell scripts and land in a later pass. `settings.json` here carries
+no `hooks` block for that reason.
+
+Names in the review skills are angle-bracket placeholders.
+`claude/PORTING.md` has the substitution table.
